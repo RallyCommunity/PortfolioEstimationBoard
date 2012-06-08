@@ -1,8 +1,9 @@
 {
-    "name": "PortfolioEstimationBoard",
-    "className": "CustomApp",
+    "name": "Portfolio Estimation Board",
+    "className": "PortfolioEstimationBoard",
     "sdk": "2.0p",
     "javascript": [
+        "PortfolioKanbanCard.js",
         "App.js"
     ],
     "css": [
