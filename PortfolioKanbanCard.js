@@ -8,7 +8,7 @@ Ext.define('Rally.app.portfolioitem.PortfolioKanbanCard', {
     inheritableStatics:{
 
         getAdditionalFetchFields:function () {
-            return ['Owner', 'FormattedID', 'PercentDoneByStoryCount', 'StateChangedDate'];
+            return ['Owner', 'FormattedID', 'PercentDoneByStoryCount', 'StateChangedDate','State'];
         }
 
     },
@@ -54,13 +54,17 @@ Ext.define('Rally.app.portfolioitem.PortfolioKanbanCard', {
             timeInStateStr = Math.floor(timeInState / 7) + " weeks";
         }
 
+
+        var state = this.getRecord().get('State');
+        var columnName = state ? state._refObjectName : "No Entry";
         if (timeInState > 0) {
             cardBody.add({
                 xtype:'component',
                 cls:'timeInState',
-                renderTpl:'{timeInState} in this column',
+                renderTpl:'{timeInState} in {columnName} column',
                 renderData:{
-                    timeInState:timeInStateStr
+                    timeInState:timeInStateStr,
+                    columnName: columnName
                 }
             });
         }
