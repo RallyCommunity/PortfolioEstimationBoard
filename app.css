@@ -1,3 +1,6 @@
-.app {
-     /* Add app styles here */
+.parent-button {
+    float: right
+}
+.type-combo{
+    float:left
 }

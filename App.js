@@ -45,6 +45,7 @@ Ext.define('PortfolioEstimationBoard', {
         this.typeCombo = Ext.widget('rallycombobox', {
             fieldLabel:'Type',
             labelWidth:30,
+            cls:'type-combo',
             labelClsExtra:'rui-label',
             stateful:false,
             storeConfig:{
@@ -69,6 +70,7 @@ Ext.define('PortfolioEstimationBoard', {
                 {
                     xtype: 'rallybutton',
                     itemId:'parentButton',
+                    cls:'parent-button',
                     text: 'Filter By Parent',
                     handler: this._openChooserForFilter,
                     hidden:true,

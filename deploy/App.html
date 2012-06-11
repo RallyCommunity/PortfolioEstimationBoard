@@ -143,6 +143,7 @@
                     this.typeCombo = Ext.widget('rallycombobox', {
                         fieldLabel:'Type',
                         labelWidth:30,
+                        cls:'type-combo',
                         labelClsExtra:'rui-label',
                         stateful:false,
                         storeConfig:{
@@ -167,6 +168,7 @@
                             {
                                 xtype: 'rallybutton',
                                 itemId:'parentButton',
+                                cls:'parent-button',
                                 text: 'Filter By Parent',
                                 handler: this._openChooserForFilter,
                                 hidden:true,
@@ -389,8 +391,11 @@
     </script>
 
     <style type="text/css">
-        .app {
-             /* Add app styles here */
+        .parent-button {
+            float: right
+        }
+        .type-combo{
+            float:left
         }
     </style>
 </head>
