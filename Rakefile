@@ -3,7 +3,7 @@ require 'fileutils'
 
 DISABLE_JSLINT = ENV['DISABLE_JSLINT'] == 'true'
 
-task :default => [:debug,:build]
+task :default => [:debug, :build]
 
 desc "Create an app with the provided name (and optional SDK version)"
 task :new, :app_name, :sdk_version do |t, args|
@@ -58,9 +58,10 @@ module Rally
     class AppTemplateBuilder
 
       CONFIG_FILE = "config.json"
+      DEPLOY_DIR = 'deploy'
       JAVASCRIPT_FILE = "App.js"
       CSS_FILE = "app.css"
-      HTML = "App.html"
+      HTML = "#{DEPLOY_DIR}/App.html"
       HTML_DEBUG = "App-debug.html"
       CLASS_NAME = "CustomApp"
 
@@ -80,12 +81,14 @@ module Rally
         @config.class_name = CLASS_NAME
 
         create_file_from_template CONFIG_FILE, Rally::AppTemplates::CONFIG_TPL
-        create_file_from_template JAVASCRIPT_FILE, Rally::AppTemplates::JAVASCRIPT_TPL, { :escape => true }
+        create_file_from_template JAVASCRIPT_FILE, Rally::AppTemplates::JAVASCRIPT_TPL, {:escape => true}
         create_file_from_template CSS_FILE, Rally::AppTemplates::CSS_TPL
       end
 
       def build_app_html(debug = false, file = nil)
         @config.validate
+
+        assure_deploy_directory_exists()
 
         if file.nil?
           file = debug ? HTML_DEBUG : HTML
@@ -105,7 +108,7 @@ module Rally
                                                     "<link rel=\"stylesheet\" type=\"text/css\" href=\"VALUE\">",
                                                     2)
 
-        create_file_from_template file, template, { :debug => debug, :escape => true }
+        create_file_from_template file, template, {:debug => debug, :escape => true}
       end
 
       def generate_js_inline_block
@@ -114,6 +117,11 @@ module Rally
       end
 
       private
+
+      def assure_deploy_directory_exists
+        mkdir DEPLOY_DIR unless  File.exists?(DEPLOY_DIR)
+      end
+
       def get_template_files
         [CONFIG_FILE, JAVASCRIPT_FILE, CSS_FILE]
       end
