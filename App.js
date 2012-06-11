@@ -69,23 +69,13 @@ Ext.define('PortfolioEstimationBoard', {
         this.currentType = this.typeCombo.getValue();
 
         Ext.create('Rally.data.WsapiDataStore', {
-            model:'State',
+            model:'PreliminaryEstimate',
             context:this.getContext().getDataContext(),
             autoLoad:true,
-            fetch:['Name', 'WIPLimit', 'Description'],
-            filters:[
-                {
-                    property:'StateType',
-                    value:this.currentType
-                },
-                {
-                    property:'Enabled',
-                    value:true
-                }
-            ],
+            fetch : true,
             sorters:[
                 {
-                    property:'OrderIndex',
+                    property:'Value',
                     direction:'ASC'
                 }
             ],
@@ -114,7 +104,7 @@ Ext.define('PortfolioEstimationBoard', {
             cardboard = Ext.widget('rallycardboard', {
                 types:['PortfolioItem'],
                 itemId:'cardboard',
-                attribute:'State',
+                attribute:'PreliminaryEstimate',
                 columns:columns,
                 maxColumnsPerBoard:columns.length,
                 ddGroup:this.typeCombo.getValue(),
@@ -134,7 +124,7 @@ Ext.define('PortfolioEstimationBoard', {
                     ]
                 },
 
-                loadDescription:'Portfolio Kanban'
+                loadDescription:'Portfolio Estimation Board'
             });
 
             this.down('#bodyContainer').add(cardboard);

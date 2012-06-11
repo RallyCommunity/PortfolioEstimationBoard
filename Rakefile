@@ -1,7 +1,7 @@
 require 'fileutils'
 
 
-ENABLE_JSLINT = ENV['ENABLE_JSLINT'] == 'false'
+DISABLE_JSLINT = ENV['DISABLE_JSLINT'] == 'true'
 
 task :default => [:debug,:build]
 
@@ -34,7 +34,7 @@ end
 
 desc "Run jslint on all JavaScript files used by this app, can be disabled by setting DISABLE_JSLINT=true."
 task :jslint do |t|
-  if ENABLE_JSLINT
+  unless DISABLE_JSLINT
     Dir.chdir(Rake.original_dir)
 
     config = get_config_from_file
@@ -136,7 +136,7 @@ module Rally
 
         resources.each do |file|
           if debug
-            block << separator << debug_tpl.gsub("VALUE"){file}
+            block << separator << debug_tpl.gsub("VALUE", file)
             if is_javascript_file(file)
               separator = ",\n" + indent * 4
             else
@@ -148,7 +148,7 @@ module Rally
             end
           end
         end
-        template.gsub(placeholder){block}
+        template.gsub(placeholder, block)
       end
 
       def replace_placeholder_variables(str, opts = {})
@@ -184,8 +184,8 @@ module Rally
     class AppConfig
       SDK_RELATIVE_URL = "/apps"
       SDK_ABSOLUTE_URL = "https://rally1.rallydev.com/apps"
-      SDK_FILE = "sdk.js"
-      SDK_DEBUG_FILE = "sdk-debug.js"
+      SDK_FILE = "sdk.js?wsapiVersion=1.33"
+      SDK_DEBUG_FILE = "sdk-debug.js?wsapiVersion=1.33"
 
       attr_reader :name, :sdk_version
       attr_accessor :javascript, :css, :class_name
