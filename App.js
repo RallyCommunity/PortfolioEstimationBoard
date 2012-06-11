@@ -1,4 +1,3 @@
-
 Ext.define('PortfolioEstimationBoard', {
     extend:'Rally.app.App',
     layout:'auto',
@@ -42,8 +41,55 @@ Ext.define('PortfolioEstimationBoard', {
         });
 
         this.typeCombo.on('select', this._loadCardboard, this);
-        this.typeCombo.store.on('load', this._loadCardboard, this);
-        this.down('#header').add(this.typeCombo);
+        this.typeCombo.store.on('load', this._loadTypes, this);
+        var header = this.down('#header');
+        header.add(this.typeCombo);
+        header.add({
+            xtype: 'rallybutton',
+            text: 'Filter By Parent',
+            handler: this._openChooserForFilter,
+            scope:this
+        });
+    },
+
+    _openChooserForFilter:function() {
+        var filters = [];
+        if (this.typeParents[this.currentType]) {
+            filters.push({
+                property: 'PortfolioItemType',
+                value: this.typeParents[this.currentType].get('_ref')
+            });
+        }
+        console.log(filters);
+
+        Ext.create('Rally.ui.dialog.ChooserDialog', {
+            artifactTypes: ['portfolioitem'],
+            autoShow: true,
+            height: 250,
+            title: 'Choose Portfolio Item dealie',
+            storeConfig : {
+                filters: filters
+            },
+            listeners: {
+                artifactChosen: function(selectedRecord) {
+                    Ext.Msg.alert('Chooser', selectedRecord.Name + ' was chosen');
+                },
+                scope: this
+            }
+        });
+    },
+
+    _loadTypes:function(store, records) {
+        this.typeParents = {};
+        var previousType;
+        Ext.each(records, function(type) {
+            var ref = type.get('_ref');
+            this.typeParents[ref] = previousType;
+            previousType = type;
+        }, this);
+
+        this.types = records;
+        this._loadCardboard();
     },
 
     _loadCardboard:function () {
@@ -54,8 +100,7 @@ Ext.define('PortfolioEstimationBoard', {
             },
             scope:this
         });
-
-    },
+    } ,
 
     /**
      * @private
@@ -88,7 +133,8 @@ Ext.define('PortfolioEstimationBoard', {
             }
         });
 
-    },
+    }
+    ,
 
     /**
      * Given a set of columns, build a cardboard component. Otherwise show an empty message.
@@ -133,7 +179,8 @@ Ext.define('PortfolioEstimationBoard', {
             this._showNoColumns();
         }
 
-    },
+    }
+    ,
 
     _showNoColumns:function () {
         this.add({
@@ -141,7 +188,8 @@ Ext.define('PortfolioEstimationBoard', {
             cls:'no-type-text',
             html:'<p>This Type has no states defined.</p>'
         });
-    },
+    }
+    ,
 
     /**
      * @private
@@ -171,7 +219,8 @@ Ext.define('PortfolioEstimationBoard', {
         }
 
         return columns;
-    },
+    }
+    ,
 
     _attachPercentDoneToolTip:function (cardboard) {
         Ext.create('Rally.ui.tooltip.PercentDoneToolTip', {
@@ -191,6 +240,6 @@ Ext.define('PortfolioEstimationBoard', {
     }
 
 
-
-});
+})
+    ;
 
