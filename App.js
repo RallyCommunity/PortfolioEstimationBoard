@@ -19,6 +19,11 @@ Ext.define('PortfolioEstimationBoard', {
      */
     typeParents:undefined,
 
+    /**
+     * The record that is the current parent, the cardboard will be filtered by it
+     */
+    filterParent:undefined,
+
 
     items:[
         {
@@ -61,14 +66,14 @@ Ext.define('PortfolioEstimationBoard', {
 
         this.down('#header').add(
             [this.typeCombo,
-            {
-                xtype: 'rallybutton',
-                itemId:'parentButton',
-                text: 'Filter By Parent',
-                handler: this._openChooserForFilter,
-                hidden:true,
-                scope:this
-            }]);
+                {
+                    xtype: 'rallybutton',
+                    itemId:'parentButton',
+                    text: 'Filter By Parent',
+                    handler: this._openChooserForFilter,
+                    hidden:true,
+                    scope:this
+                }]);
     },
 
 
@@ -104,7 +109,8 @@ Ext.define('PortfolioEstimationBoard', {
             },
             listeners: {
                 artifactChosen: function(selectedRecord) {
-                    Ext.Msg.alert('Chooser', selectedRecord.Name + ' was chosen');
+                    this.filterParent = selectedRecord;
+                    this._loadCardboard();
                 },
                 scope: this
             }
@@ -165,8 +171,7 @@ Ext.define('PortfolioEstimationBoard', {
             }
         });
 
-    }
-    ,
+    },
 
     /**
      * Given a set of columns, build a cardboard component. Otherwise show an empty message.
@@ -178,7 +183,18 @@ Ext.define('PortfolioEstimationBoard', {
             if (cardboard) {
                 cardboard.destroy();
             }
-
+            var filters = [
+                {
+                    property:'PortfolioItemType',
+                    value:this.currentType
+                }
+            ];
+            if (this.filterParent) {
+                filters.push({
+                    property:'Parent',
+                    value:this.filterParent.get('_ref')
+                });
+            }
             cardboard = Ext.widget('rallycardboard', {
                 types:['PortfolioItem'],
                 itemId:'cardboard',
@@ -191,12 +207,7 @@ Ext.define('PortfolioEstimationBoard', {
                     xtype:'rallyportfolioestimationcard'
                 },
                 storeConfig:{
-                    filters:[
-                        {
-                            property:'PortfolioItemType',
-                            value:this.currentType
-                        }
-                    ]
+                    filters: filters
                 },
 
                 loadDescription:'Portfolio Estimation Board'
@@ -211,8 +222,7 @@ Ext.define('PortfolioEstimationBoard', {
             this._showNoColumns();
         }
 
-    }
-    ,
+    } ,
 
     _showNoColumns:function () {
         this.add({
@@ -220,8 +230,7 @@ Ext.define('PortfolioEstimationBoard', {
             cls:'no-type-text',
             html:'<p>This Type has no states defined.</p>'
         });
-    }
-    ,
+    },
 
     /**
      * @private
@@ -251,8 +260,7 @@ Ext.define('PortfolioEstimationBoard', {
         }
 
         return columns;
-    }
-    ,
+    }    ,
 
     _attachPercentDoneToolTip:function (cardboard) {
         Ext.create('Rally.ui.tooltip.PercentDoneToolTip', {
