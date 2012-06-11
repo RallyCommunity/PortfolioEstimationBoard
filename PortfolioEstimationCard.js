@@ -3,7 +3,7 @@
  */
 Ext.define('Rally.app.portfolioitem.PortfolioKanbanCard', {
     extend:'Rally.ui.cardboard.ArtifactCard',
-    alias:'widget.rallyportfoliokanbancard',
+    alias:'widget.rallyportfolioestimationcard',
 
     inheritableStatics:{
 
@@ -54,8 +54,8 @@ Ext.define('Rally.app.portfolioitem.PortfolioKanbanCard', {
             timeInStateStr = Math.floor(timeInState / 7) + " weeks";
         }
 
-
-        var state = this.getRecord().get('State');
+        var record = this.getRecord();
+        var state = record.get('State');
         var columnName = state ? state._refObjectName : "No Entry";
         if (timeInState > 0) {
             cardBody.add({
@@ -65,6 +65,20 @@ Ext.define('Rally.app.portfolioitem.PortfolioKanbanCard', {
                 renderData:{
                     timeInState:timeInStateStr,
                     columnName: columnName
+                }
+            });
+        }
+
+        debugger;
+
+        if(record.get('Parent')){
+
+            cardBody.add({
+                xtype:'component',
+                cls:'timeInState',
+                renderTpl:'Parent : {parent}',
+                renderData:{
+                    parent:record.get('Parent')
                 }
             });
         }
