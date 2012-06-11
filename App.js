@@ -109,9 +109,6 @@ Ext.define('PortfolioEstimationBoard', {
                 maxColumnsPerBoard:columns.length,
                 ddGroup:this.typeCombo.getValue(),
                 enableRanking:this.getContext().get('workspace').WorkspaceConfiguration.DragDropRankingEnabled,
-                columnConfig:{
-                    xtype:'rallykanbancolumn'
-                },
                 cardConfig:{
                     xtype:'rallyportfoliokanbancard'
                 },
