@@ -42,31 +42,46 @@ Ext.define('PortfolioEstimationBoard', {
 
         this.typeCombo.on('select', this._loadCardboard, this);
         this.typeCombo.store.on('load', this._loadTypes, this);
-        var header = this.down('#header');
-        header.add(this.typeCombo);
-        header.add({
+
+        this.down('#header').add(this.typeCombo);
+        this.down('#header').add({
             xtype: 'rallybutton',
+            itemId:'parentButton',
             text: 'Filter By Parent',
             handler: this._openChooserForFilter,
+            hidden:true,
             scope:this
         });
     },
 
+
+    _manageParentChooserButton:function() {
+        var button = this.down(".rallybutton");
+        if (this.typeParents[this.currentType]) {
+            button.setText('Filter By '+this.typeParents[this.currentType].get('_refObjectName'));
+            button.show();
+        }
+        else{
+            button.hide();
+        }
+
+    },
+
     _openChooserForFilter:function() {
         var filters = [];
-        if (this.typeParents[this.currentType]) {
+        var parent = this.typeParents[this.currentType];
+        if (parent) {
             filters.push({
                 property: 'PortfolioItemType',
-                value: this.typeParents[this.currentType].get('_ref')
+                value: parent.get('_ref')
             });
         }
-        console.log(filters);
 
         Ext.create('Rally.ui.dialog.ChooserDialog', {
             artifactTypes: ['portfolioitem'],
             autoShow: true,
             height: 250,
-            title: 'Choose Portfolio Item dealie',
+            title: 'Choose ' + parent.get('_refObjectName'),
             storeConfig : {
                 filters: filters
             },
@@ -93,6 +108,8 @@ Ext.define('PortfolioEstimationBoard', {
     },
 
     _loadCardboard:function () {
+        this.currentType = this.typeCombo.getValue();
+        this._manageParentChooserButton();
         this._loadStates({
             success:function (states) {
                 var columns = this._createColumns(states);
@@ -111,8 +128,6 @@ Ext.define('PortfolioEstimationBoard', {
      * @param options.scope the scope to call success with
      */
     _loadStates:function (options) {
-        this.currentType = this.typeCombo.getValue();
-
         Ext.create('Rally.data.WsapiDataStore', {
             model:'PreliminaryEstimate',
             context:this.getContext().getDataContext(),
