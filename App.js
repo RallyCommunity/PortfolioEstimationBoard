@@ -78,7 +78,7 @@ Ext.define('PortfolioEstimationBoard', {
                     scope:this
                 },
                 {
-                    xtype: 'rallyaddnew',
+                    xtype: 'addnew',
                     recordTypes: ['PortfolioItem'],
                     ignoredRequiredFields: ['Name'],
                     listeners: {
@@ -133,6 +133,7 @@ Ext.define('PortfolioEstimationBoard', {
             },
             listeners: {
                 artifactChosen: function(selectedRecord) {
+                    this.down('.addnew').updateButtonText("+ Add Child");
                     this.currentParent = selectedRecord;
                     this._loadCardboard();
                 },

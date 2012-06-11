@@ -7,7 +7,15 @@
 
     <script type="text/javascript">
         Rally.onReady(function() {
-            /**
+            Ext.define('Rally.app.AddNew', {
+                extend:'Rally.ui.AddNew',
+                alias:'widget.addnew',
+                updateButtonText:function(text){
+                    var newContainer = this.down('#new');
+                    this.newButtonText = text;
+                    newContainer.setText(text);
+                }
+            });            /**
              * A special cardboard card for use by the PortfolioKanbanApp
              */
             Ext.define('Rally.app.portfolioitem.PortfolioKanbanCard', {
@@ -231,6 +239,7 @@
                         },
                         listeners: {
                             artifactChosen: function(selectedRecord) {
+                                this.down('.rallyaddnew').down('#new').setText("+ Add Child");
                                 this.currentParent = selectedRecord;
                                 this._loadCardboard();
                             },
