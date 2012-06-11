@@ -71,9 +71,9 @@ Ext.define('PortfolioEstimationBoard', {
                     xtype: 'rallybutton',
                     itemId:'parentButton',
                     cls:'parent-button',
-                    text: 'Filter By Parent',
+                    text: 'Parent Filter Disabled',
                     handler: this._openChooserForFilter,
-                    hidden:true,
+                    disabled:true,
                     scope:this
                 }]);
     },
@@ -83,10 +83,11 @@ Ext.define('PortfolioEstimationBoard', {
         var button = this.down(".rallybutton");
         if (this.typeParents[this.currentType]) {
             button.setText('Filter By ' + this.typeParents[this.currentType].get('_refObjectName'));
-            button.show();
+            button.setDisabled(false);
         }
         else {
-            button.hide();
+            button.setText('Parent Filter Disabled');
+            button.setDisabled(true);
         }
 
     },
@@ -104,7 +105,6 @@ Ext.define('PortfolioEstimationBoard', {
         Ext.create('Rally.ui.dialog.ChooserDialog', {
             artifactTypes: ['portfolioitem'],
             autoShow: true,
-            height: 250,
             title: 'Choose ' + parent.get('_refObjectName'),
             storeConfig : {
                 filters: filters
