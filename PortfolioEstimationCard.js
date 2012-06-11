@@ -8,7 +8,7 @@ Ext.define('Rally.app.portfolioitem.PortfolioKanbanCard', {
     inheritableStatics:{
 
         getAdditionalFetchFields:function () {
-            return ['Owner', 'FormattedID', 'PercentDoneByStoryCount', 'StateChangedDate','State'];
+            return ['Owner', 'FormattedID', 'PercentDoneByStoryCount', 'StateChangedDate','State',"Parent"];
         }
 
     },
@@ -69,8 +69,6 @@ Ext.define('Rally.app.portfolioitem.PortfolioKanbanCard', {
             });
         }
 
-        debugger;
-
         if(record.get('Parent')){
 
             cardBody.add({
@@ -78,7 +76,7 @@ Ext.define('Rally.app.portfolioitem.PortfolioKanbanCard', {
                 cls:'timeInState',
                 renderTpl:'Parent : {parent}',
                 renderData:{
-                    parent:record.get('Parent')
+                    parent:record.get('Parent')._refObjectName
                 }
             });
         }

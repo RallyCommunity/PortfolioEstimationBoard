@@ -3,6 +3,22 @@ Ext.define('PortfolioEstimationBoard', {
     layout:'auto',
     appName:'Portfolio Estimation Board',
 
+    /**
+     * The combo that controls the type
+     */
+    typeCombo:undefined,
+
+
+    /**
+     * The currently selected type
+     */
+    currentType:undefined,
+
+    /**
+     * An object that contains the parents for each type with the types key being the ref
+     */
+    typeParents:undefined,
+
 
     items:[
         {
@@ -43,25 +59,26 @@ Ext.define('PortfolioEstimationBoard', {
         this.typeCombo.on('select', this._loadCardboard, this);
         this.typeCombo.store.on('load', this._loadTypes, this);
 
-        this.down('#header').add(this.typeCombo);
-        this.down('#header').add({
-            xtype: 'rallybutton',
-            itemId:'parentButton',
-            text: 'Filter By Parent',
-            handler: this._openChooserForFilter,
-            hidden:true,
-            scope:this
-        });
+        this.down('#header').add(
+            [this.typeCombo,
+            {
+                xtype: 'rallybutton',
+                itemId:'parentButton',
+                text: 'Filter By Parent',
+                handler: this._openChooserForFilter,
+                hidden:true,
+                scope:this
+            }]);
     },
 
 
     _manageParentChooserButton:function() {
         var button = this.down(".rallybutton");
         if (this.typeParents[this.currentType]) {
-            button.setText('Filter By '+this.typeParents[this.currentType].get('_refObjectName'));
+            button.setText('Filter By ' + this.typeParents[this.currentType].get('_refObjectName'));
             button.show();
         }
-        else{
+        else {
             button.hide();
         }
 
@@ -171,7 +188,7 @@ Ext.define('PortfolioEstimationBoard', {
                 ddGroup:this.typeCombo.getValue(),
                 enableRanking:this.getContext().get('workspace').WorkspaceConfiguration.DragDropRankingEnabled,
                 cardConfig:{
-                    xtype:'rallyportfoliokanbancard'
+                    xtype:'rallyportfolioestimationcard'
                 },
                 storeConfig:{
                     filters:[

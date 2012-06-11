@@ -3,7 +3,7 @@
     "className": "PortfolioEstimationBoard",
     "sdk": "2.0p",
     "javascript": [
-        "PortfolioKanbanCard.js",
+        "PortfolioEstimationCard.js",
         "App.js"
     ],
     "css": [
