@@ -22,7 +22,7 @@ Ext.define('PortfolioEstimationBoard', {
     /**
      * The record that is the current parent, the cardboard will be filtered by it
      */
-    filterParent:undefined,
+    currentParent:undefined,
 
 
     items:[
@@ -66,7 +66,8 @@ Ext.define('PortfolioEstimationBoard', {
         this.typeCombo.store.on('load', this._loadTypes, this);
 
         this.down('#header').add(
-            [this.typeCombo,
+            [
+                this.typeCombo,
                 {
                     xtype: 'rallybutton',
                     itemId:'parentButton',
@@ -75,7 +76,28 @@ Ext.define('PortfolioEstimationBoard', {
                     handler: this._openChooserForFilter,
                     disabled:true,
                     scope:this
-                }]);
+                },
+                {
+                    xtype: 'rallyaddnew',
+                    recordTypes: ['PortfolioItem'],
+                    ignoredRequiredFields: ['Name'],
+                    listeners: {
+                        beforerecordadd:function(addNew, options) {
+                            var record = options.record;
+                            record.set('PortfolioItemType', this.currentType);
+                            record.set('Project', this.getContext().getProject()._ref);
+
+                            if (this.currentParent) {
+                                record.set('Parent', this.currentParent.get('_ref'));
+                            }
+                        },
+                        recordadd: function(addNew, result) {
+                            this.down('#cardboard').addCard(result.record);
+                        },
+                        scope:this
+                    }
+                }
+            ]);
     },
 
 
@@ -111,7 +133,7 @@ Ext.define('PortfolioEstimationBoard', {
             },
             listeners: {
                 artifactChosen: function(selectedRecord) {
-                    this.filterParent = selectedRecord;
+                    this.currentParent = selectedRecord;
                     this._loadCardboard();
                 },
                 scope: this
@@ -191,10 +213,10 @@ Ext.define('PortfolioEstimationBoard', {
                     value:this.currentType
                 }
             ];
-            if (this.filterParent) {
+            if (this.currentParent) {
                 filters.push({
                     property:'Parent',
-                    value:this.filterParent.get('_ref')
+                    value:this.currentParent.get('_ref')
                 });
             }
             cardboard = Ext.widget('rallycardboard', {
