@@ -3,6 +3,8 @@ Ext.define('PortfolioEstimationBoard', {
     layout:'auto',
     appName:'Portfolio Estimation Board',
 
+    hidden:true,
+
     /**
      * The combo that controls the type
      */
@@ -113,7 +115,7 @@ Ext.define('PortfolioEstimationBoard', {
 
     _showClearButton :function(currentParent) {
         this.currentParent = currentParent;
-        var button =this.down('#clearButton');
+        var button = this.down('#clearButton');
         button.setVisible(true);
         button.setText(currentParent.get('Name'));
 
@@ -156,7 +158,6 @@ Ext.define('PortfolioEstimationBoard', {
             },
             listeners: {
                 artifactChosen: function(selectedRecord) {
-                    this.down('.addnew').updateButtonText("+ Add Child");
                     this._showClearButton(selectedRecord);
                     this._loadCardboard();
                 },
@@ -180,10 +181,12 @@ Ext.define('PortfolioEstimationBoard', {
 
     _loadCardboard:function () {
         this.currentType = this.typeCombo.getValue();
+        this.down('.addnew').updateButtonText("+ Add " + this.typeCombo.getRawValue());
         this._manageParentChooserButton();
         this._loadStates({
             success:function (states) {
                 var columns = this._createColumns(states);
+                this.setVisible(true);
                 this._drawCardboard(columns);
             },
             scope:this
