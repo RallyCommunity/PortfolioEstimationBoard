@@ -221,7 +221,7 @@
                     this.currentParent = currentParent;
                     var button =this.down('#clearButton');
                     button.setVisible(true);
-                    button.setText(currentParent.get('Name'));
+                    button.setText('Clear Filter: ' + currentParent.get('Name'));
             
                 },
                 _clearFilter:function(button) {
