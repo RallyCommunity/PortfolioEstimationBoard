@@ -1,19 +1,16 @@
-.parent-button {
-    float: left;
+.button {
+    float: right;
     margin-left: 10px;
-    margin-top: 10px
 }
 
 .type-combo {
-    float: left;
+    float: right;
     margin-left: 10px;
-    margin-top: 10px
 }
 
 .add-new {
     float: left;
     margin-left: 10px;
-    margin-top: 10px
 }
 
 .headerControls {
@@ -22,4 +19,12 @@
 
 .headerControls .x-panel-body {
     border-style: none;
+}
+
+.filterItemDisplay {
+    float: right;
+}
+
+.header {
+    margin-top: 10px
 }

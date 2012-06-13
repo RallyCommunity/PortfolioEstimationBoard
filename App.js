@@ -64,20 +64,27 @@ Ext.define('PortfolioEstimationBoard', {
 
         this.typeCombo.on('select', this._loadCardboard, this);
         this.typeCombo.store.on('load', this._loadTypes, this);
-        this.down('#header').add({
-            itemId:'headerControls',
-            cls:'headerControls'
-        });
-        this.down('#headerControls').add(
+
+        this.down('#header').add(
             [
                 this.typeCombo,
                 {
                     xtype: 'rallybutton',
                     itemId:'parentButton',
-                    cls:'parent-button',
+                    cls:'button',
                     text: 'Parent Filter Disabled',
                     handler: this._openChooserForFilter,
                     disabled:true,
+                    scope:this
+                },
+
+                {
+                    itemId:'clearButton',
+                    xtype: 'rallybutton',
+                    cls:'button',
+                    hidden:true,
+                    text: 'Clear Filter',
+                    handler: this._clearFilter,
                     scope:this
                 },
                 {
@@ -104,6 +111,18 @@ Ext.define('PortfolioEstimationBoard', {
             ]);
     },
 
+    _showClearButton :function(currentParent) {
+        this.currentParent = currentParent;
+        var button =this.down('#clearButton');
+        button.setVisible(true);
+        button.setText(currentParent.get('Name'));
+
+    },
+    _clearFilter:function(button) {
+        button.setVisible(false);
+        this.currentParent = null;
+        this._loadCardboard();
+    },
 
     _manageParentChooserButton:function() {
         var button = this.down(".rallybutton");
@@ -138,7 +157,7 @@ Ext.define('PortfolioEstimationBoard', {
             listeners: {
                 artifactChosen: function(selectedRecord) {
                     this.down('.addnew').updateButtonText("+ Add Child");
-                    this.currentParent = selectedRecord;
+                    this._showClearButton(selectedRecord);
                     this._loadCardboard();
                 },
                 scope: this
