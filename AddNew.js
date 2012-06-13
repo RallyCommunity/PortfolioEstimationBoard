@@ -1,9 +1,11 @@
 Ext.define('Rally.app.AddNew', {
     extend:'Rally.ui.AddNew',
     alias:'widget.addnew',
-    updateButtonText:function(text){
+    updateTypeText:function(type) {
         var newContainer = this.down('#new');
-        this.newButtonText = text;
-        newContainer.setText(text);
+        this.newButtonText = "+ Add New " + type;
+        this.fieldLabel = "New "+type;
+        this.setFieldLabel(this.fieldLabel);
+        newContainer.setText(this.newButtonText);
     }
 });

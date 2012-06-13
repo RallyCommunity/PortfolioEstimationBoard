@@ -181,7 +181,7 @@ Ext.define('PortfolioEstimationBoard', {
 
     _loadCardboard:function () {
         this.currentType = this.typeCombo.getValue();
-        this.down('.addnew').updateButtonText("+ Add " + this.typeCombo.getRawValue());
+        this.down('.addnew').updateTypeText(this.typeCombo.getRawValue());
         this._manageParentChooserButton();
         this._loadStates({
             success:function (states) {
