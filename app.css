@@ -1,6 +1,25 @@
 .parent-button {
-    float: right
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px
 }
-.type-combo{
-    float:left
+
+.type-combo {
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px
+}
+
+.add-new {
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px
+}
+
+.headerControls {
+    float: left;
+}
+
+.headerControls .x-panel-body {
+    border-style: none;
 }

@@ -170,8 +170,11 @@
             
                     this.typeCombo.on('select', this._loadCardboard, this);
                     this.typeCombo.store.on('load', this._loadTypes, this);
-            
-                    this.down('#header').add(
+                    this.down('#header').add({
+                        itemId:'headerControls',
+                        cls:'headerControls'
+                    });
+                    this.down('#headerControls').add(
                         [
                             this.typeCombo,
                             {
@@ -184,8 +187,9 @@
                                 scope:this
                             },
                             {
-                                xtype: 'rallyaddnew',
+                                xtype: 'addnew',
                                 recordTypes: ['PortfolioItem'],
+                                cls:'add-new',
                                 ignoredRequiredFields: ['Name'],
                                 listeners: {
                                     beforerecordadd:function(addNew, options) {
@@ -239,7 +243,7 @@
                         },
                         listeners: {
                             artifactChosen: function(selectedRecord) {
-                                this.down('.rallyaddnew').down('#new').setText("+ Add Child");
+                                this.down('.addnew').updateButtonText("+ Add Child");
                                 this.currentParent = selectedRecord;
                                 this._loadCardboard();
                             },
@@ -423,12 +427,30 @@
 
     <style type="text/css">
         .parent-button {
-            float: right
+            float: left;
+            margin-left: 10px;
+            margin-top: 10px
         }
-        .type-combo{
-            float:left
+        
+        .type-combo {
+            float: left;
+            margin-left: 10px;
+            margin-top: 10px
         }
-    </style>
+        
+        .add-new {
+            float: left;
+            margin-left: 10px;
+            margin-top: 10px
+        }
+        
+        .headerControls {
+            float: left;
+        }
+        
+        .headerControls .x-panel-body {
+            border-style: none;
+        }    </style>
 </head>
 <body></body>
 </html>

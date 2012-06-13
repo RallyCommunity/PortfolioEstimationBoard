@@ -64,8 +64,11 @@ Ext.define('PortfolioEstimationBoard', {
 
         this.typeCombo.on('select', this._loadCardboard, this);
         this.typeCombo.store.on('load', this._loadTypes, this);
-
-        this.down('#header').add(
+        this.down('#header').add({
+            itemId:'headerControls',
+            cls:'headerControls'
+        });
+        this.down('#headerControls').add(
             [
                 this.typeCombo,
                 {
@@ -80,6 +83,7 @@ Ext.define('PortfolioEstimationBoard', {
                 {
                     xtype: 'addnew',
                     recordTypes: ['PortfolioItem'],
+                    cls:'add-new',
                     ignoredRequiredFields: ['Name'],
                     listeners: {
                         beforerecordadd:function(addNew, options) {
