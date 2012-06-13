@@ -10,10 +10,12 @@
             Ext.define('Rally.app.AddNew', {
                 extend:'Rally.ui.AddNew',
                 alias:'widget.addnew',
-                updateButtonText:function(text){
+                updateTypeText:function(type) {
                     var newContainer = this.down('#new');
-                    this.newButtonText = text;
-                    newContainer.setText(text);
+                    this.newButtonText = "+ Add New " + type;
+                    this.fieldLabel = "New "+type;
+                    this.setFieldLabel(this.fieldLabel);
+                    newContainer.setText(this.newButtonText);
                 }
             });            /**
              * A special cardboard card for use by the PortfolioKanbanApp
@@ -108,6 +110,8 @@
                 extend:'Rally.app.App',
                 layout:'auto',
                 appName:'Portfolio Estimation Board',
+            
+                hidden:true,
             
                 /**
                  * The combo that controls the type
@@ -219,9 +223,9 @@
             
                 _showClearButton :function(currentParent) {
                     this.currentParent = currentParent;
-                    var button =this.down('#clearButton');
+                    var button = this.down('#clearButton');
                     button.setVisible(true);
-                    button.setText('Clear Filter: ' + currentParent.get('Name'));
+                    button.setText(currentParent.get('Name'));
             
                 },
                 _clearFilter:function(button) {
@@ -262,7 +266,6 @@
                         },
                         listeners: {
                             artifactChosen: function(selectedRecord) {
-                                this.down('.addnew').updateButtonText("+ Add Child");
                                 this._showClearButton(selectedRecord);
                                 this._loadCardboard();
                             },
@@ -286,10 +289,12 @@
             
                 _loadCardboard:function () {
                     this.currentType = this.typeCombo.getValue();
+                    this.down('.addnew').updateTypeText(this.typeCombo.getRawValue());
                     this._manageParentChooserButton();
                     this._loadStates({
                         success:function (states) {
                             var columns = this._createColumns(states);
+                            this.setVisible(true);
                             this._drawCardboard(columns);
                         },
                         scope:this
