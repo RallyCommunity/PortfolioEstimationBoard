@@ -192,8 +192,8 @@ module Rally
     class AppConfig
       SDK_RELATIVE_URL = "/apps"
       SDK_ABSOLUTE_URL = "https://rally1.rallydev.com/apps"
-      SDK_FILE = "sdk.js?wsapiVersion=1.33"
-      SDK_DEBUG_FILE = "sdk-debug.js?wsapiVersion=1.33"
+      SDK_FILE = "sdk.js?wsapiVersion=1.37"
+      SDK_DEBUG_FILE = "sdk-debug.js?wsapiVersion=1.37"
 
       attr_reader :name, :sdk_version
       attr_accessor :javascript, :css, :class_name

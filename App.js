@@ -53,7 +53,14 @@ Ext.define('PortfolioEstimationBoard', {
             storeConfig:{
                 autoLoad:true,
                 remoteFilter:false,
-                model:'Type',
+                filters:[
+                    Ext.create('Rally.data.QueryFilter', {
+                        property: 'TypePath',
+                        operator: 'Contains',
+                        value: 'PortfolioItem/'
+                    })
+                ],
+                model:'TypeDefinition',
                 sorters:{
                     property:'ordinalValue',
                     direction:'Desc'

@@ -3,11 +3,35 @@
 <head>
     <title>Portfolio Estimation Board</title>
 
-    <script type="text/javascript" src="/apps/2.0p/sdk.js?wsapiVersion=1.33"></script>
+    <script type="text/javascript" src="/apps/2.0p/sdk.js?wsapiVersion=1.37"></script>
 
     <script type="text/javascript">
         Rally.onReady(function() {
-            Ext.define('Rally.app.AddNew', {
+            Ext.onReady(function() {
+                Rally.util.Navigation.createRallyDetailUrl = function(input, relative) {
+                    var ref = Rally.util.Ref.getRefUri(input);
+                    if (ref) {
+                        var type = Rally.util.Ref.getTypeFromRef(ref);
+                        if (type !== "testset") {
+                            var appSDKAdapter = getAppSDKAdapter();
+                            if (appSDKAdapter) {
+                                return appSDKAdapter.createDetailUrl(ref, relative);
+                            } else {
+            
+                                //construct the url the "old" way
+                                var refUrl = this._getContextPath() + "/detail/" + Rally.util.TypeInfo.getTypeInfoByName(type).prefix +
+                                    "/" + Rally.util.Ref.getOidFromRef(ref);
+                                if (relative) {
+                                    return refUrl;
+                                } else {
+                                    return ref.replace(this.getWebServicePrefixRegex(), refUrl);
+                                }
+                            }
+                        }
+                    }
+                    return null;
+                }
+            });            Ext.define('Rally.app.AddNew', {
                 extend:'Rally.ui.AddNew',
                 alias:'widget.addnew',
                 updateTypeText:function(type) {
@@ -161,7 +185,14 @@
                         storeConfig:{
                             autoLoad:true,
                             remoteFilter:false,
-                            model:'Type',
+                            filters:[
+                                Ext.create('Rally.data.QueryFilter', {
+                                    property: 'TypePath',
+                                    operator: 'Contains',
+                                    value: 'PortfolioItem/'
+                                })
+                            ],
+                            model:'TypeDefinition',
                             sorters:{
                                 property:'ordinalValue',
                                 direction:'Desc'
@@ -275,6 +306,7 @@
                 },
             
                 _loadTypes:function(store, records) {
+                    debugger;
                     this.typeParents = {};
                     var previousType;
                     Ext.each(records, function(type) {
