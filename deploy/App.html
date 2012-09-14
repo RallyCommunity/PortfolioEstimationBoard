@@ -8,28 +8,22 @@
     <script type="text/javascript">
         Rally.onReady(function() {
             Ext.onReady(function() {
+                var old = Rally.util.Navigation.createRallyDetailUrl;
                 Rally.util.Navigation.createRallyDetailUrl = function(input, relative) {
                     var ref = Rally.util.Ref.getRefUri(input);
                     if (ref) {
-                        var type = Rally.util.Ref.getTypeFromRef(ref);
-                        if (type !== "testset") {
-                            var appSDKAdapter = getAppSDKAdapter();
-                            if (appSDKAdapter) {
-                                return appSDKAdapter.createDetailUrl(ref, relative);
-                            } else {
+                        var type = "portfolioitem";
+                        //construct the url the "old" way
+                        var refUrl = this._getContextPath() + "/detail/" + type +
+                            "/" + Rally.util.Ref.getTypeFromRef(ref) + "/" + Rally.util.Ref.getOidFromRef(ref);
+                        if (relative) {
+                            return refUrl;
+                        } else {
             
-                                //construct the url the "old" way
-                                var refUrl = this._getContextPath() + "/detail/" + Rally.util.TypeInfo.getTypeInfoByName(type).prefix +
-                                    "/" + Rally.util.Ref.getOidFromRef(ref);
-                                if (relative) {
-                                    return refUrl;
-                                } else {
-                                    return ref.replace(this.getWebServicePrefixRegex(), refUrl);
-                                }
-                            }
+                            var oldDetail =  ref.replace(this.getWebServicePrefixRegex(), refUrl);
+                            return oldDetail.replace('slm','#');
                         }
                     }
-                    return null;
                 }
             });            Ext.define('Rally.app.AddNew', {
                 extend:'Rally.ui.AddNew',
@@ -306,7 +300,6 @@
                 },
             
                 _loadTypes:function(store, records) {
-                    debugger;
                     this.typeParents = {};
                     var previousType;
                     Ext.each(records, function(type) {
