@@ -48,8 +48,9 @@ Ext.define('PortfolioEstimationBoard', {
             fieldLabel:'Type',
             labelWidth:30,
             cls:'type-combo',
+            stateful:true,
+            stateId:'charles-porfolio-estimation-combo',
             labelClsExtra:'rui-label',
-            stateful:false,
             storeConfig:{
                 autoLoad:true,
                 remoteFilter:false,
@@ -63,7 +64,7 @@ Ext.define('PortfolioEstimationBoard', {
                 model:'TypeDefinition',
                 sorters:{
                     property:'ordinalValue',
-                    direction:'Desc'
+                    direction:'Asc'
                 },
                 cls:'typeCombo',
                 defaultSelectionToFirst:false,
