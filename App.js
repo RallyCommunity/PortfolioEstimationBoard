@@ -64,7 +64,7 @@ Ext.define('PortfolioEstimationBoard', {
                 model:'TypeDefinition',
                 sorters:{
                     property:'ordinalValue',
-                    direction:'Asc'
+                    direction:'Desc'
                 },
                 cls:'typeCombo',
                 defaultSelectionToFirst:false,
@@ -96,28 +96,6 @@ Ext.define('PortfolioEstimationBoard', {
                     text:'Clear Filter',
                     handler:this._clearFilter,
                     scope:this
-                },
-                {
-                    xtype:'rallyaddnew',
-                    itemId:'addnew',
-                    recordTypes:['PortfolioItem'],
-                    cls:'add-new',
-                    ignoredRequiredFields:['Name'],
-                    listeners:{
-                        beforerecordadd:function (addNew, options) {
-                            var record = options.record;
-                            record.set('PortfolioItemType', this.currentType);
-                            record.set('Project', this.getContext().getProject()._ref);
-
-                            if (this.currentParent) {
-                                record.set('Parent', this.currentParent.get('_ref'));
-                            }
-                        },
-                        recordadd:function (addNew, result) {
-                            this.down('#cardboard').addCard(result.record);
-                        },
-                        scope:this
-                    }
                 }
             ]);
     },
@@ -134,6 +112,7 @@ Ext.define('PortfolioEstimationBoard', {
         this.currentParent = null;
         this._loadCardboard();
     },
+
 
     _manageParentChooserButton:function () {
         var button = this.down(".rallybutton");
