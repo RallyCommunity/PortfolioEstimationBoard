@@ -275,15 +275,21 @@ Ext.define('PortfolioEstimationBoard', {
         var columns;
 
         if (states.length) {
-
+            var fakeState = states[0].copy();
+            fakeState.set("Name","No Entry");
             columns = [
                 {
-                    displayValue:'No Entry',
                     value:null,
-                    cardLimit:50
+                    record:fakeState,
+                    displayField:'Name',
+                    cardLimit:50,
+                    columnHeaderConfig:{
+                        fieldToDisplay:"Name",
+                        record:fakeState,
+                        editable: false
+                    }
                 }
             ];
-
             Ext.Array.each(states, function (state) {
                 columns.push({
                     xtype:"rallycardboardcolumn",

@@ -1,7 +1,7 @@
 {
     "name": "Portfolio Estimation Board",
     "className": "PortfolioEstimationBoard",
-    "sdk": "2.0p",
+    "sdk": "2.0rc1",
     "javascript": [
         "PortfolioEstimationCard.js",
         "App.js"
