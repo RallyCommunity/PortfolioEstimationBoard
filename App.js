@@ -56,9 +56,9 @@ Ext.define('PortfolioEstimationBoard', {
                 remoteFilter:false,
                 filters:[
                     Ext.create('Rally.data.QueryFilter', {
-                        property: 'TypePath',
-                        operator: 'Contains',
-                        value: 'PortfolioItem/'
+                        property:'TypePath',
+                        operator:'Contains',
+                        value:'PortfolioItem/'
                     })
                 ],
                 model:'TypeDefinition',
@@ -79,32 +79,32 @@ Ext.define('PortfolioEstimationBoard', {
             [
                 this.typeCombo,
                 {
-                    xtype: 'rallybutton',
+                    xtype:'rallybutton',
                     itemId:'parentButton',
                     cls:'button',
-                    text: 'Parent Filter Disabled',
-                    handler: this._openChooserForFilter,
+                    text:'Parent Filter Disabled',
+                    handler:this._openChooserForFilter,
                     disabled:true,
                     scope:this
                 },
 
                 {
                     itemId:'clearButton',
-                    xtype: 'rallybutton',
+                    xtype:'rallybutton',
                     cls:'button',
                     hidden:true,
-                    text: 'Clear Filter',
-                    handler: this._clearFilter,
+                    text:'Clear Filter',
+                    handler:this._clearFilter,
                     scope:this
                 },
                 {
-                    xtype: 'rallyaddnew',
+                    xtype:'rallyaddnew',
                     itemId:'addnew',
-                    recordTypes: ['PortfolioItem'],
+                    recordTypes:['PortfolioItem'],
                     cls:'add-new',
-                    ignoredRequiredFields: ['Name'],
-                    listeners: {
-                        beforerecordadd:function(addNew, options) {
+                    ignoredRequiredFields:['Name'],
+                    listeners:{
+                        beforerecordadd:function (addNew, options) {
                             var record = options.record;
                             record.set('PortfolioItemType', this.currentType);
                             record.set('Project', this.getContext().getProject()._ref);
@@ -113,7 +113,7 @@ Ext.define('PortfolioEstimationBoard', {
                                 record.set('Parent', this.currentParent.get('_ref'));
                             }
                         },
-                        recordadd: function(addNew, result) {
+                        recordadd:function (addNew, result) {
                             this.down('#cardboard').addCard(result.record);
                         },
                         scope:this
@@ -122,20 +122,20 @@ Ext.define('PortfolioEstimationBoard', {
             ]);
     },
 
-    _showClearButton :function(currentParent) {
+    _showClearButton:function (currentParent) {
         this.currentParent = currentParent;
         var button = this.down('#clearButton');
         button.setVisible(true);
         button.setText(currentParent.get('Name'));
 
     },
-    _clearFilter:function(button) {
+    _clearFilter:function (button) {
         button.setVisible(false);
         this.currentParent = null;
         this._loadCardboard();
     },
 
-    _manageParentChooserButton:function() {
+    _manageParentChooserButton:function () {
         var button = this.down(".rallybutton");
         if (this.typeParents[this.currentType]) {
             button.setText('Filter By ' + this.typeParents[this.currentType].get('_refObjectName'));
@@ -148,37 +148,37 @@ Ext.define('PortfolioEstimationBoard', {
 
     },
 
-    _openChooserForFilter:function() {
+    _openChooserForFilter:function () {
         var filters = [];
         var parent = this.typeParents[this.currentType];
         if (parent) {
             filters.push({
-                property: 'PortfolioItemType',
-                value: parent.get('_ref')
+                property:'PortfolioItemType',
+                value:parent.get('_ref')
             });
         }
 
         Ext.create('Rally.ui.dialog.ChooserDialog', {
-            artifactTypes: ['portfolioitem'],
-            autoShow: true,
-            title: 'Choose ' + parent.get('_refObjectName'),
-            storeConfig : {
-                filters: filters
+            artifactTypes:['portfolioitem'],
+            autoShow:true,
+            title:'Choose ' + parent.get('_refObjectName'),
+            storeConfig:{
+                filters:filters
             },
-            listeners: {
-                artifactChosen: function(selectedRecord) {
+            listeners:{
+                artifactChosen:function (selectedRecord) {
                     this._showClearButton(selectedRecord);
                     this._loadCardboard();
                 },
-                scope: this
+                scope:this
             }
         });
     },
 
-    _loadTypes:function(store, records) {
+    _loadTypes:function (store, records) {
         this.typeParents = {};
         var previousType;
-        Ext.each(records, function(type) {
+        Ext.each(records, function (type) {
             var ref = type.get('_ref');
             this.typeParents[ref] = previousType;
             previousType = type;
@@ -190,7 +190,6 @@ Ext.define('PortfolioEstimationBoard', {
 
     _loadCardboard:function () {
         this.currentType = this.typeCombo.getValue();
-        //this.down('#addnew').updateTypeText(this.typeCombo.getRawValue());
         this._manageParentChooserButton();
         this._loadStates({
             success:function (states) {
@@ -200,7 +199,7 @@ Ext.define('PortfolioEstimationBoard', {
             },
             scope:this
         });
-    } ,
+    },
 
     /**
      * @private
@@ -215,7 +214,7 @@ Ext.define('PortfolioEstimationBoard', {
             model:'PreliminaryEstimate',
             context:this.getContext().getDataContext(),
             autoLoad:true,
-            fetch : true,
+            fetch:true,
             sorters:[
                 {
                     property:'Value',
@@ -267,22 +266,19 @@ Ext.define('PortfolioEstimationBoard', {
                     xtype:'rallyportfolioestimationcard'
                 },
                 storeConfig:{
-                    filters: filters
+                    filters:filters
                 },
-
                 loadDescription:'Portfolio Estimation Board'
             });
 
             this.down('#bodyContainer').add(cardboard);
-
-//            this._attachPercentDoneToolTip(cardboard);
 
             Ext.EventManager.onWindowResize(cardboard.resizeAllColumns, cardboard);
         } else {
             this._showNoColumns();
         }
 
-    } ,
+    },
 
     _showNoColumns:function () {
         this.add({
@@ -311,35 +307,23 @@ Ext.define('PortfolioEstimationBoard', {
 
             Ext.Array.each(states, function (state) {
                 columns.push({
+                    xtype:"rallycardboardcolumn",
+                    displayField:'Name',
                     value:state.get('_ref'),
-                    displayValue:state.get('Name'),
-                    wipLimit:state.get('WIPLimit'),
-                    policies:state.get('Description')
+                    record:state,
+                    columnHeaderConfig:{
+                        fieldToDisplay:"Name",
+                        record:state,
+                        editable: true
+                    }
                 });
             });
         }
 
         return columns;
     }
-//
-//    _attachPercentDoneToolTip:function (cardboard) {
-//        Ext.create('Rally.ui.tooltip.PercentDoneToolTip', {
-//            target:cardboard.getEl(),
-//            delegate:'.percentDoneContainer',
-//            listeners:{
-//                beforeshow:function (tip) {
-//
-//                    var cardElement = Ext.get(tip.triggerElement).up('.cardContainer');
-//                    var card = Ext.getCmp(cardElement.id);
-//
-//                    tip.updateContent(card.getRecord().data);
-//                },
-//                scope:this
-//            }
-//        });
-//    }
 
 
 })
-    ;
+;
 
