@@ -93,7 +93,7 @@ Ext.define('PortfolioEstimationBoard', {
                     xtype:'rallybutton',
                     cls:'button',
                     hidden:true,
-                    text:'Clear Filter',
+                    text:'Remove Filter',
                     handler:this._clearFilter,
                     scope:this
                 }
@@ -104,7 +104,6 @@ Ext.define('PortfolioEstimationBoard', {
         this.currentParent = currentParent;
         var button = this.down('#clearButton');
         button.setVisible(true);
-        button.setText(currentParent.get('Name'));
 
     },
     _clearFilter:function (button) {
