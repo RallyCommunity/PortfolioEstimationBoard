@@ -2,7 +2,7 @@
  * A special cardboard card for use by the PortfolioKanbanApp
  */
 Ext.define('Rally.app.portfolioitem.PortfolioKanbanCard', {
-    extend:'Rally.ui.cardboard.ArtifactCard',
+    extend:'Rally.ui.cardboard.Card',
     alias:'widget.rallyportfolioestimationcard',
 
     inheritableStatics:{

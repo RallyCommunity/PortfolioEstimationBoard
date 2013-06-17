@@ -97,7 +97,8 @@ Ext.define('PortfolioEstimationBoard', {
                     scope:this
                 },
                 {
-                    xtype: 'addnew',
+                    xtype: 'rallyaddnew',
+                    itemId:'addnew',
                     recordTypes: ['PortfolioItem'],
                     cls:'add-new',
                     ignoredRequiredFields: ['Name'],
@@ -188,7 +189,7 @@ Ext.define('PortfolioEstimationBoard', {
 
     _loadCardboard:function () {
         this.currentType = this.typeCombo.getValue();
-        this.down('.addnew').updateTypeText(this.typeCombo.getRawValue());
+        //this.down('#addnew').updateTypeText(this.typeCombo.getRawValue());
         this._manageParentChooserButton();
         this._loadStates({
             success:function (states) {
@@ -273,7 +274,7 @@ Ext.define('PortfolioEstimationBoard', {
 
             this.down('#bodyContainer').add(cardboard);
 
-            this._attachPercentDoneToolTip(cardboard);
+//            this._attachPercentDoneToolTip(cardboard);
 
             Ext.EventManager.onWindowResize(cardboard.resizeAllColumns, cardboard);
         } else {
@@ -318,24 +319,24 @@ Ext.define('PortfolioEstimationBoard', {
         }
 
         return columns;
-    }    ,
-
-    _attachPercentDoneToolTip:function (cardboard) {
-        Ext.create('Rally.ui.tooltip.PercentDoneToolTip', {
-            target:cardboard.getEl(),
-            delegate:'.percentDoneContainer',
-            listeners:{
-                beforeshow:function (tip) {
-
-                    var cardElement = Ext.get(tip.triggerElement).up('.cardContainer');
-                    var card = Ext.getCmp(cardElement.id);
-
-                    tip.updateContent(card.getRecord().data);
-                },
-                scope:this
-            }
-        });
     }
+//
+//    _attachPercentDoneToolTip:function (cardboard) {
+//        Ext.create('Rally.ui.tooltip.PercentDoneToolTip', {
+//            target:cardboard.getEl(),
+//            delegate:'.percentDoneContainer',
+//            listeners:{
+//                beforeshow:function (tip) {
+//
+//                    var cardElement = Ext.get(tip.triggerElement).up('.cardContainer');
+//                    var card = Ext.getCmp(cardElement.id);
+//
+//                    tip.updateContent(card.getRecord().data);
+//                },
+//                scope:this
+//            }
+//        });
+//    }
 
 
 })

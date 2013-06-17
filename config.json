@@ -3,8 +3,6 @@
     "className": "PortfolioEstimationBoard",
     "sdk": "2.0p",
     "javascript": [
-        "Overrides.js",
-        "AddNew.js",
         "PortfolioEstimationCard.js",
         "App.js"
     ],
