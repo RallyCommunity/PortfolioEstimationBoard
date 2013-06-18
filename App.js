@@ -26,6 +26,26 @@ Ext.define('PortfolioEstimationBoard', {
      */
     currentParent:undefined,
 
+    getSettingsFields: function() {
+        return [
+            {
+                name: 'type',
+                xtype: 'rallycombobox',
+                storeConfig: {
+                    model: 'TypeDefinition',
+                    filters:[
+                        Ext.create('Rally.data.QueryFilter', {
+                            property:'TypePath',
+                            operator:'Contains',
+                            value:'PortfolioItem/'
+                        })
+                    ],
+                    autoLoad: false
+                },
+                readyEvent: 'ready'
+            }
+        ];
+    },
 
     items:[
         {
@@ -241,7 +261,8 @@ Ext.define('PortfolioEstimationBoard', {
                 ddGroup:this.typeCombo.getValue(),
                 enableRanking:this.getContext().get('workspace').WorkspaceConfiguration.DragDropRankingEnabled,
                 cardConfig:{
-                    xtype:'rallyportfolioestimationcard'
+                    xtype:"rallyportfolioestimationcard",
+                    showIconMenus:true
                 },
                 storeConfig:{
                     filters:filters
