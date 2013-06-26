@@ -6,12 +6,6 @@ Ext.define('PortfolioEstimationBoard', {
     hidden:true,
 
     /**
-     * The combo that controls the type
-     */
-    typeCombo:undefined,
-
-
-    /**
      * The currently selected type
      */
     currentType:undefined,
@@ -26,13 +20,14 @@ Ext.define('PortfolioEstimationBoard', {
      */
     currentParent:undefined,
 
-    getSettingsFields: function() {
+
+    getSettingsFields:function () {
         return [
             {
-                name: 'type',
-                xtype: 'rallycombobox',
-                storeConfig: {
-                    model: 'TypeDefinition',
+                name:'type',
+                xtype:'rallycombobox',
+                storeConfig:{
+                    model:'TypeDefinition',
                     filters:[
                         Ext.create('Rally.data.QueryFilter', {
                             property:'TypePath',
@@ -40,9 +35,13 @@ Ext.define('PortfolioEstimationBoard', {
                             value:'PortfolioItem/'
                         })
                     ],
-                    autoLoad: false
+                    sorters:{
+                        property:'ordinalValue',
+                        direction:'Asc'
+                    },
+                    autoLoad:false
                 },
-                readyEvent: 'ready'
+                readyEvent:'ready'
             }
         ];
     },
@@ -64,36 +63,25 @@ Ext.define('PortfolioEstimationBoard', {
      * @override
      */
     launch:function () {
-        this.typeCombo = Ext.widget('rallycombobox', {
-            fieldLabel:'Type',
-            labelWidth:30,
-            cls:'type-combo',
-            stateful:true,
-            stateId:'charles-porfolio-estimation-combo',
-            labelClsExtra:'rui-label',
-            storeConfig:{
-                autoLoad:true,
-                remoteFilter:false,
-                filters:[
-                    Ext.create('Rally.data.QueryFilter', {
-                        property:'TypePath',
-                        operator:'Contains',
-                        value:'PortfolioItem/'
-                    })
-                ],
-                model:'TypeDefinition',
-                sorters:{
-                    property:'ordinalValue',
-                    direction:'Desc'
-                },
-                cls:'typeCombo',
-                defaultSelectionToFirst:false,
-                context:this.getContext().getDataContext()
-            }
+        var store = Ext.create('Rally.data.WsapiDataStore', {
+            autoLoad:true,
+            remoteFilter:false,
+            filters:[
+                Ext.create('Rally.data.QueryFilter', {
+                    property:'TypePath',
+                    operator:'Contains',
+                    value:'PortfolioItem/'
+                })
+            ],
+            model:'TypeDefinition',
+            sorters:{
+                property:'ordinalValue',
+                direction:'Asc'
+            },
+            context:this.getContext().getDataContext()
         });
 
-        this.typeCombo.on('select', this._loadCardboard, this);
-        this.typeCombo.store.on('load', this._loadTypes, this);
+        store.on('load', this._loadTypes, this);
 
         this.down('#header').add(
             [
@@ -175,8 +163,10 @@ Ext.define('PortfolioEstimationBoard', {
 
     _loadTypes:function (store, records) {
         this.typeParents = {};
+        var ascRecords = records.concat().reverse();
+        this.currentType = this.getSetting("type")||records[0].get('_ref');
         var previousType;
-        Ext.each(records, function (type) {
+        Ext.each(ascRecords, function (type) {
             var ref = type.get('_ref');
             this.typeParents[ref] = previousType;
             previousType = type;
@@ -187,7 +177,6 @@ Ext.define('PortfolioEstimationBoard', {
     },
 
     _loadCardboard:function () {
-        this.currentType = this.typeCombo.getValue();
         this._manageParentChooserButton();
         this._loadStates({
             success:function (states) {
@@ -258,7 +247,7 @@ Ext.define('PortfolioEstimationBoard', {
                 attribute:'PreliminaryEstimate',
                 columns:columns,
                 maxColumnsPerBoard:columns.length,
-                ddGroup:this.typeCombo.getValue(),
+                ddGroup:this.currentType,
                 enableRanking:this.getContext().get('workspace').WorkspaceConfiguration.DragDropRankingEnabled,
                 cardConfig:{
                     xtype:"rallyportfolioestimationcard",
@@ -296,7 +285,7 @@ Ext.define('PortfolioEstimationBoard', {
 
         if (states.length) {
             var fakeState = states[0].copy();
-            fakeState.set("Name","No Entry");
+            fakeState.set("Name", "No Entry");
             columns = [
                 {
                     value:null,
@@ -306,7 +295,7 @@ Ext.define('PortfolioEstimationBoard', {
                     columnHeaderConfig:{
                         fieldToDisplay:"Name",
                         record:fakeState,
-                        editable: false
+                        editable:false
                     }
                 }
             ];
@@ -319,7 +308,7 @@ Ext.define('PortfolioEstimationBoard', {
                     columnHeaderConfig:{
                         fieldToDisplay:"Name",
                         record:state,
-                        editable: true
+                        editable:true
                     }
                 });
             });
