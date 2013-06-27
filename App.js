@@ -5,10 +5,11 @@ Ext.define('PortfolioEstimationBoard', {
 
     hidden:true,
 
+
     /**
      * The currently selected type
      */
-    currentType:undefined,
+    currentTypeRef:undefined,
 
     /**
      * An object that contains the parents for each type with the types key being the ref
@@ -84,14 +85,17 @@ Ext.define('PortfolioEstimationBoard', {
                 property:'ordinalValue',
                 direction:'Asc'
             },
-            context:this.getContext().getDataContext()
+            context:this.getContext().getDataContext(),
+            listeners:{
+                load:this._loadTypes,
+                scope:this
+            }
         });
+    },
 
-        store.on('load', this._loadTypes, this);
-
+    _initHeader:function (type) {
         this.down('#header').add(
             [
-                this.typeCombo,
                 {
                     xtype:'rallybutton',
                     itemId:'parentButton',
@@ -110,6 +114,28 @@ Ext.define('PortfolioEstimationBoard', {
                     text:'Remove Filter',
                     handler:this._clearFilter,
                     scope:this
+                },
+                {
+                    xtype:'rallyaddnew',
+                    itemId:'addnew',
+                    recordTypes:[type.get("TypePath")],
+                    cls:'add-new',
+                    ignoredRequiredFields:['Name'],
+                    listeners:{
+                        beforerecordadd:function (addNew, options) {
+                            options.record = type;
+                            var record = options.record;
+                            record.set('Project', this.getContext().getProject()._ref);
+
+                            if (this.currentParent) {
+                                record.set('Parent', this.currentParent.get('_ref'));
+                            }
+                        },
+                        recordadd:function (addNew, result) {
+                            this.down('#cardboard').addCard(result.record);
+                        },
+                        scope:this
+                    }
                 }
             ]);
     },
@@ -139,15 +165,14 @@ Ext.define('PortfolioEstimationBoard', {
      */
     _manageParentChooserButton:function () {
         var button = this.down(".rallybutton");
-        if (this.typeParents[this.currentType]) {
-            button.setText('Filter By ' + this.typeParents[this.currentType].get('_refObjectName'));
+        if (this.typeParents[this.currentTypeRef]) {
+            button.setText('Filter By ' + this.typeParents[this.currentTypeRef].get('_refObjectName'));
             button.setDisabled(false);
         }
         else {
             button.setText('Parent Filter Disabled');
             button.setDisabled(true);
         }
-
     },
 
     /**
@@ -155,7 +180,7 @@ Ext.define('PortfolioEstimationBoard', {
      */
     _openChooserForFilter:function () {
         var filters = [];
-        var parent = this.typeParents[this.currentType];
+        var parent = this.typeParents[this.currentTypeRef];
         if (parent) {
             filters.push({
                 property:'PortfolioItemType',
@@ -186,15 +211,21 @@ Ext.define('PortfolioEstimationBoard', {
     _loadTypes:function (store, records) {
         this.typeParents = {};
         var ascRecords = records.concat().reverse();
-        this.currentType = this.getSetting("type")||records[0].get('_ref');
+        this.currentTypeRef = this.getSetting("type") || records[0].get('_ref');
         var previousType;
+        var currentType;
         Ext.each(ascRecords, function (type) {
             var ref = type.get('_ref');
             this.typeParents[ref] = previousType;
             previousType = type;
+
+            if (ref === this.currentTypeRef) {
+                currentType = type;
+            }
         }, this);
 
         this.types = records;
+        this._initHeader(currentType);
         this._loadCardboard();
     },
 
@@ -258,7 +289,7 @@ Ext.define('PortfolioEstimationBoard', {
             var filters = [
                 {
                     property:'PortfolioItemType',
-                    value:this.currentType
+                    value:this.currentTypeRef
                 }
             ];
             if (this.currentParent) {
@@ -273,7 +304,7 @@ Ext.define('PortfolioEstimationBoard', {
                 attribute:'PreliminaryEstimate',
                 columns:columns,
                 maxColumnsPerBoard:columns.length,
-                ddGroup:this.currentType,
+                ddGroup:this.currentTypeRef,
                 enableRanking:this.getContext().get('workspace').WorkspaceConfiguration.DragDropRankingEnabled,
                 cardConfig:{
                     xtype:"rallyportfolioestimationcard",
