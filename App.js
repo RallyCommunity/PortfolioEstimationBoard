@@ -20,7 +20,9 @@ Ext.define('PortfolioEstimationBoard', {
      */
     currentParent:undefined,
 
-
+    /**
+     * @override
+     */
     getSettingsFields:function () {
         return [
             {
@@ -46,6 +48,10 @@ Ext.define('PortfolioEstimationBoard', {
         ];
     },
 
+
+    /**
+     * @override
+     */
     items:[
         {
             xtype:'container',
@@ -108,19 +114,29 @@ Ext.define('PortfolioEstimationBoard', {
             ]);
     },
 
+
+    /**
+     * @private
+     */
     _showClearButton:function (currentParent) {
         this.currentParent = currentParent;
         var button = this.down('#clearButton');
         button.setVisible(true);
 
     },
+
+    /**
+     * @private
+     */
     _clearFilter:function (button) {
         button.setVisible(false);
         this.currentParent = null;
         this._loadCardboard();
     },
 
-
+    /**
+     * @private
+     */
     _manageParentChooserButton:function () {
         var button = this.down(".rallybutton");
         if (this.typeParents[this.currentType]) {
@@ -134,6 +150,9 @@ Ext.define('PortfolioEstimationBoard', {
 
     },
 
+    /**
+     * @private
+     */
     _openChooserForFilter:function () {
         var filters = [];
         var parent = this.typeParents[this.currentType];
@@ -161,6 +180,9 @@ Ext.define('PortfolioEstimationBoard', {
         });
     },
 
+    /**
+     * @private
+     */
     _loadTypes:function (store, records) {
         this.typeParents = {};
         var ascRecords = records.concat().reverse();
@@ -176,6 +198,10 @@ Ext.define('PortfolioEstimationBoard', {
         this._loadCardboard();
     },
 
+
+    /**
+     * @private
+     */
     _loadCardboard:function () {
         this._manageParentChooserButton();
         this._loadStates({
